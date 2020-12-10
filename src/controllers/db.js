@@ -1,11 +1,11 @@
-const firebaseApp = require('./firebaseapp.js');
+const firebaseApp = require('./firebaseApp.js');
 const DBFS = firebaseApp.app.firestore();
 
 // writes one piece of data to the specified collection
 export function writeOne(id, data, collectionName, callback, callbackOnError) {
 	try {
 		DBFS.collection(collectionName).doc(id).set(data)
-			.then((res) => {callback(res, data)});
+			.then((res) => {callback(data)});
 	}
 	catch(error) {
 		callbackOnError(error);

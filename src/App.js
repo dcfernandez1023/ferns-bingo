@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react';
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/App.css';
 
-import Bingo from './controllers/Bingo.js';
+import BingoContainer from './components/BingoContainer.js';
 
 function App() {
-
-  const bingo = new Bingo();
-  const card = bingo.generateCard();
-  console.log(card);
   return (
-    <div> Hello </div>
+    <body>
+      <Container>
+        <Row>
+          <Col>
+            <BingoContainer />
+          </Col>
+        </Row>
+      </Container>
+    </body>
   );
 }
 

@@ -1,16 +1,12 @@
 class Bingo {
   constructor() {
     this.initializeNums();
-    console.log(this.B);
-    console.log(this.I);
-    console.log(this.N);
-    console.log(this.G);
-    console.log(this.O);
   }
 
   /*
     generates a bingo card (5x5 matrix)
   */
+  /*
   generateCard() {
     let card = [[], [], [], [], []];
     let gridSize = 5;
@@ -21,6 +17,25 @@ class Bingo {
       }
     }
     this.initializeNums();
+    card[2][2] = 0;
+    console.log(card);
+    return card;
+  }
+  */
+  generateCard() {
+    let card = {0: [], 1: [], 2: [], 3: [], 4: []};
+    let gridSize = 5;
+    for(var i = 0; i < gridSize; i++) {
+      for(var j = 0; j < gridSize; j++) {
+        if(i === 2 && j === 2) {
+          card[i].push(0);
+          continue;
+        }
+        card[i].push(this.getColNum(j));
+      }
+    }
+    this.initializeNums();
+    console.log(card);
     return card;
   }
 
@@ -30,29 +45,24 @@ class Bingo {
   getColNum(colNum) {
     let colB = 0; let colI = 1; let colN = 2; let colG = 3; let colO = 4;
     var n;
-    if(colNum == colB) {
+    if(colNum === colB) {
       n = this.getRandomNum(this.B.length)
-      console.log(n);
       return this.B.splice(n, 1)[0];
     }
-    else if(colNum == colI) {
+    else if(colNum === colI) {
       n = this.getRandomNum(this.I.length)
-      console.log(n);
       return this.I.splice(n, 1)[0];
     }
-    else if(colNum == colN) {
+    else if(colNum === colN) {
       n = this.getRandomNum(this.N.length)
-      console.log(n);
       return this.N.splice(n, 1)[0];
     }
-    else if(colNum == colG) {
+    else if(colNum === colG) {
       n = this.getRandomNum(this.G.length)
-      console.log(n);
       return this.G.splice(n, 1)[0];
     }
-    else if(colNum == colO) {
+    else if(colNum === colO) {
       n = this.getRandomNum(this.O.length)
-      console.log(n);
       return this.O.splice(n, 1)[0];
     }
     return -1;
