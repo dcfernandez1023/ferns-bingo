@@ -10,17 +10,19 @@ const BingoModel = require('../models/bingoModel.js');
 
 function BingoCard(props) {
 
-  const[grid, setGrid] = useState();
+  const[card, setCard] = useState();
+  const[selected, setSelected] = useState();
 
   useEffect(() => {
-    setGrid(props.grid);
-  }, [props.grid])
+    setCard(props.card);
+    setSelected(props.selected);
+  }, [props.card, props.selected])
 
   const gridStyle = {textAlign: "center", padding: "1%", border: "1px solid gray"};
   const gridHeaderStyle = {backgroundColor: "#D4E6F1", textAlign: "center", padding: "1%", border: "1px solid gray"};
   const cardStyle = {margin: "2%"};
 
-  if(grid === undefined) {
+  if(card === undefined || selected === undefined) {
     return <div></div>
   }
   return (
@@ -35,19 +37,21 @@ function BingoCard(props) {
             );
           })}
         </Row>
-        {Object.keys(grid).map((row) => {
+        {Object.keys(card.grid).map((row) => {
           return (
             <Row>
-              {grid[row].map((col) => {
+              {card.grid[row].map((col) => {
                 if(col == 0) {
                   return (
-                    <Col action as = {ListGroup.Item} style = {gridStyle} >
+                    <Col as = {ListGroup.Item} style = {gridStyle}>
                       FREE
                     </Col>
                   );
                 }
                 return (
-                  <Col action as = {ListGroup.Item} style = {gridStyle}>
+                  <Col action as = {ListGroup.Item} style = {gridStyle} variant = {selected[row][col] === 1 ? "warning" : ""}
+                    onClick = {() => {props.selectBox(props.card.id, row, col)}}
+                  >
                     <b> {col} </b>
                   </Col>
                 );

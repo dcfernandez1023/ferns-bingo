@@ -4,11 +4,6 @@ export const card = {
   grid: {}
 }
 
-//this will persist in local storage until user requests new cards
-export const selectedGrid = {
-  id: []
-}
-
 export const headers = [
   {value: "B", color: "#196F3D"},
   {value: "I", color: "#CB4335"},
