@@ -17,7 +17,7 @@ export function deleteOne(id, collectionName, callback, callbackOnError) {
 	try {
 		var doc = DBFS.collection(collectionName).doc(id);
 		doc.delete()
-			.then((res) => {callback(res)});
+			.then((res) => {callback(id)});
 	}
 	catch(error) {
 		callbackOnError(error);

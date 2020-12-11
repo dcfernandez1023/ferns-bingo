@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Spinner from 'react-bootstrap/Spinner'
 
 import BingoCard from './BingoCard.js';
 const BingoController = require('../controllers/bingoController.js');
@@ -13,9 +14,14 @@ const localStorageHelper = require('../controllers/localStorageHelper.js');
 
 function BingoContainer() {
 
-  const[cards, setCards] = useState([]);
-  const[metaData, setMetaData] = useState({});
+  const[cards, setCards] = useState();
+  const[metaData, setMetaData] = useState();
   const[show, setShow] = useState(false);
+  const[deleteShow, setDeleteShow] = useState(false);
+  const[deleteId, setDeleteId] = useState();
+  const[resetShow, setResetShow] = useState();
+  const[resetId, setResetId] = useState();
+  const[isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     localStorageHelper.initializeStorage();
@@ -40,11 +46,13 @@ function BingoContainer() {
     setMetaData(newMetaData);
     localStorageHelper.updateCards(newCards);
     localStorageHelper.updateMetaData(newMetaData);
+    setIsLoading(false);
   }
 
-  function createCardCallbackOnError(error) {
+  function callbackOnError(error) {
     //TODO: handle errors more elegantly
     alert(error);
+    setIsLoading(false);
   }
 
   function selectBox(id, row, col) {
@@ -55,22 +63,126 @@ function BingoContainer() {
     else {
       newMetaData[id][row][col] = 1;
     }
-
     setMetaData(newMetaData);
     localStorageHelper.updateMetaData(newMetaData);
   }
 
+  function deleteCardCallback(id) {
+    //update cards
+    var newCards = [];
+    for(var i = 0; i < cards.length; i++) {
+      if(cards[i].id !== id) {
+        var card = JSON.parse(JSON.stringify(cards[i]));
+        newCards.push(card);
+      }
+    }
+    var newMetaData = JSON.parse(JSON.stringify(metaData));
+    delete newMetaData[id];
+    setCards(newCards);
+    setMetaData(newMetaData);
+    localStorageHelper.updateCards(newCards);
+    localStorageHelper.updateMetaData(newMetaData);
+    setDeleteShow(false);
+    setIsLoading(false);
+  }
+
+  function resetCard() {
+    if(resetId === undefined) {
+      alert("Internal error. Could not reset card.");
+      return;
+    }
+    var newMetaData = JSON.parse(JSON.stringify(metaData));
+    newMetaData[resetId] = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]];
+    setMetaData(newMetaData);
+    localStorageHelper.updateMetaData(newMetaData);
+    setResetShow(false);
+    setIsLoading(false);
+  }
+
+  if(cards === undefined || metaData === undefined) {
+    return (
+      <Container fluid>
+        <Row  style = {{marginTop: "2%", textAlign: "center"}}>
+          <Col>
+            <Spinner animation = "border" />
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+
   return (
     <Container fluid>
+      {/*maximum card modal*/}
       <Modal
-        size = "sm"
         show = {show}
         onHide = {() => {setShow(false)}}
       >
-        <Modal.Header closeButton> </Modal.Header>
-        <Modal.Body> Cannot add a new bingo card. The maximum limit is 4. </Modal.Body>
+        <Modal.Header closeButton> Card Limit Reached </Modal.Header>
+        <Modal.Body> Cannot add a new bingo card. The maximum limit is 4 cards. </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick = {() => {setShow(false)}}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
       </Modal>
-      <Row style = {{marginTop: "1%"}}>
+      {/*delete card modal*/}
+      <Modal
+        show = {deleteShow}
+        onHide = {() => {setDeleteShow(false)}}
+      >
+        <Modal.Header closeButton> Confirm Delete </Modal.Header>
+        <Modal.Body> Are you sure you want to delete this bingo card? </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick = {() => {
+              if(deleteId !== undefined) {
+                setIsLoading(true);
+                BingoController.deleteCard(deleteId,
+                  deleteCardCallback,
+                  callbackOnError
+                );
+              }
+              else {
+                alert("Internal error. Could not delete card.");
+              }
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant = "secondary"
+            onClick = {() => {setDeleteShow(false)}}
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {/*reset card modal*/}
+      <Modal
+        show = {resetShow}
+        onHide = {() => {setResetShow(false)}}
+      >
+        <Modal.Header closeButton> Confirm Reset </Modal.Header>
+        <Modal.Body> Are you sure you want to reset this bingo card? </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick = {() => {
+              setIsLoading(true);
+              resetCard();
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant = "secondary"
+            onClick = {() => {setResetShow(false)}}
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Row style = {{marginTop: "2%"}}>
         <Col>
           <h4>
             <Button variant = "success" style = {{marginRight: "1%"}}
@@ -79,9 +191,10 @@ function BingoContainer() {
                   setShow(true);
                   return;
                 }
+                setIsLoading(true);
                 BingoController.createCard(
                   createCardCallback,
-                  createCardCallbackOnError
+                  callbackOnError
                 );
               }}
             >
@@ -91,23 +204,33 @@ function BingoContainer() {
           </h4>
         </Col>
       </Row>
-      <Row>
-        {cards.map((card) => {
-          return (
-            <Col md = {6}>
-              <Row>
-                <Col>
-                  <BingoCard
-                    card = {card}
-                    selected = {metaData[card.id]}
-                    selectBox = {selectBox}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          );
-        })}
-      </Row>
+      {cards.length === 0 ?
+        <Row>
+          <Col> <p> You don't have any bingo cards. Click the + button to add some. 🎅🎄 </p> </Col>
+        </Row>
+        :
+        <Row>
+          {cards.map((card) => {
+            return (
+              <Col md = {6}>
+                <Row>
+                  <Col>
+                    <BingoCard
+                      card = {card}
+                      selected = {metaData[card.id]}
+                      selectBox = {selectBox}
+                      setDeleteShow = {setDeleteShow}
+                      setDeleteId = {setDeleteId}
+                      setResetShow = {setResetShow}
+                      setResetId = {setResetId}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            );
+          })}
+          </Row>
+        }
     </Container>
   );
 }

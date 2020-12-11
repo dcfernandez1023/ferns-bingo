@@ -5,8 +5,10 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const BingoModel = require('../models/bingoModel.js');
+const BingoController = require('../controllers/bingoController.js');
 
 function BingoCard(props) {
 
@@ -61,10 +63,20 @@ function BingoCard(props) {
         })}
         <Row style = {{marginTop: "2%", float: "right"}}>
           <Col>
-            <Button variant = "outline-dark" size = "sm">
+            <Button variant = "outline-dark" size = "sm"
+              onClick = {() => {
+                props.setResetShow(true);
+                props.setResetId(card.id);
+              }}
+            >
               🧽
             </Button>
-            <Button variant = "outline-dark" size = "sm">
+            <Button variant = "outline-dark" size = "sm"
+              onClick = {() => {
+                props.setDeleteShow(true);
+                props.setDeleteId(card.id);
+              }}
+            >
               🗑️
             </Button>
           </Col>

@@ -24,3 +24,7 @@ export function createCard(callback, callbackOnError) {
   card.grid = bingo.generateCard();
   DB.writeOne(card.id, card, "cards", callback, callbackOnError);
 }
+
+export function deleteCard(id, callback, callbackOnError) {
+  DB.deleteOne(id, "cards", callback, callbackOnError);
+}
