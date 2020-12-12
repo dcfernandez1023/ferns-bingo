@@ -63,7 +63,7 @@ function BingoCard(props) {
         })}
         <Row style = {{marginTop: "2%", float: "right"}}>
           <Col>
-            <Button variant = "outline-dark" size = "sm"
+            <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "75%"}}
               onClick = {() => {
                 props.setResetShow(true);
                 props.setResetId(card.id);
@@ -71,7 +71,9 @@ function BingoCard(props) {
             >
               🧽
             </Button>
-            <Button variant = "outline-dark" size = "sm"
+          </Col>
+          <Col>
+            <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "25%"}}
               onClick = {() => {
                 props.setDeleteShow(true);
                 props.setDeleteId(card.id);

@@ -24,6 +24,24 @@ export function deleteOne(id, collectionName, callback, callbackOnError) {
 	}
 }
 
+//returns all the documents within the specified collection
+export function getAllDocs(collectionName, callbackOnError) {
+	var cards = [];
+	try {
+		DBFS.collection(collectionName).get()
+			.then(snapshot => {
+				snapshot.forEach(doc => {
+					cards.push(doc.data());
+				});
+			}
+		);
+	}
+	catch(error) {
+		callbackOnError(error);
+	}
+	return cards;
+}
+
 // returns a Querey object that can be enabled to listen to changes in multiple documents within the specified collection
 // only accepts ONE filter to querey
 export function getQuerey(filterName, filterValue, collectionName) {

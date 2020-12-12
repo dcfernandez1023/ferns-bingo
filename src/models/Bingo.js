@@ -35,7 +35,6 @@ class Bingo {
       }
     }
     this.initializeNums();
-    console.log(card);
     return card;
   }
 
