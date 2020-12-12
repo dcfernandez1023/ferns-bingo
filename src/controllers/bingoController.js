@@ -59,6 +59,18 @@ export function deleteCard(id, callback, callbackOnError) {
   DB.deleteOne(id, "cards", callback, callbackOnError);
 }
 
+export function deleteAllCards(cards, callback, callbackOnError) {
+  for(var i = 0; i < cards.length; i++) {
+    DB.deleteOne(cards[i].id, "cards",
+      function() {
+        return;
+      },
+      callbackOnError
+    );
+  }
+  callback();
+}
+
 function randomId() {
   const LEN = 10;
   var id;

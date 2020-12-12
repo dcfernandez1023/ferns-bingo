@@ -19,12 +19,18 @@ function BingoContainer() {
 
   const[cards, setCards] = useState();
   const[metaData, setMetaData] = useState();
+
   const[show, setShow] = useState(false);
   const[deleteShow, setDeleteShow] = useState(false);
   const[deleteId, setDeleteId] = useState();
   const[resetShow, setResetShow] = useState();
   const[resetId, setResetId] = useState();
+
+  const [resetAllShow, setResetAllShow] = useState(false);
+  const[deleteAllShow, setDeleteAllShow] = useState(false);
+
   const[isLoading, setIsLoading] = useState(false);
+
   const[toastShow, setToastShow] = useState(false);
   const[toastText, setToastText] = useState("");
 
@@ -97,6 +103,17 @@ function BingoContainer() {
     setToastShow(true);
   }
 
+  function deleteAllCardsCallback() {
+    localStorageHelper.updateCards([]);
+    localStorageHelper.updateMetaData({});
+    setCards([]);
+    setMetaData({});
+    setDeleteAllShow(false);
+    setIsLoading(false);
+    setToastText("✔️ All cards deleted successfully");
+    setToastShow(true);
+  }
+
   function resetCard() {
     if(resetId === undefined) {
       alert("Internal error. Could not reset card.");
@@ -110,6 +127,21 @@ function BingoContainer() {
     setIsLoading(false);
     setToastShow(true);
     setToastText("✔️ Card reset successfully");
+    setToastShow(true);
+  }
+
+  function resetAllCards() {
+    var newMetaData = JSON.parse(JSON.stringify(metaData));
+    var keys = Object.keys(newMetaData);
+    for(var i = 0; i < keys.length; i++) {
+      newMetaData[keys[i]] = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]];
+    }
+    setMetaData(newMetaData);
+    localStorageHelper.updateMetaData(newMetaData);
+    setResetAllShow(false);
+    setIsLoading(false);
+    setToastShow(true);
+    setToastText("✔️ All cards reset successfully");
     setToastShow(true);
   }
 
@@ -196,12 +228,61 @@ function BingoContainer() {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/*delete all cards modal*/}
+      <Modal
+        show = {deleteAllShow}
+        onHide = {() => {setDeleteAllShow(false)}}
+      >
+        <Modal.Header closeButton> Confirm Delete 🗑️ </Modal.Header>
+        <Modal.Body> Are you sure you want to delete <strong> ALL </strong> bingo cards? </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick = {() => {
+              setIsLoading(true);
+              BingoController.deleteAllCards(cards,
+                deleteAllCardsCallback,
+                callbackOnError
+              );
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant = "secondary"
+            onClick = {() => {setDeleteAllShow(false)}}
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {/*reset all cards modal*/}
+      <Modal
+        show = {resetAllShow}
+        onHide = {() => {setResetAllShow(false)}}
+      >
+        <Modal.Header closeButton> Confirm Reset 🧹 </Modal.Header>
+        <Modal.Body> Are you sure you want to reset <strong> ALL </strong> bingo cards? </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick = {() => {
+              setIsLoading(true);
+              resetAllCards();
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant = "secondary"
+            onClick = {() => setResetAllShow(false)}
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Row style = {{marginTop: "2%"}}>
-        <Col xs = {8}>
-          <DropdownButton id = "card-options" variant = "success" style = {{marginLeft: "1.5%", marginRight: "1%", float: "left"}}>
+        <Col xs = {10}>
+          <DropdownButton id = "card-options" variant = "success" style = {{marginLeft: "1.5%", marginRight: "1.5%", float: "left"}}>
             <Dropdown.ItemText> <strong> Card Options </strong> </Dropdown.ItemText>
-            <Dropdown.Item> Delete All </Dropdown.Item>
-            <Dropdown.Item> Reset All </Dropdown.Item>
+            <Dropdown.Item onClick = {() => setDeleteAllShow(true)}> Delete All </Dropdown.Item>
+            <Dropdown.Item onClick = {() => setResetAllShow(true)}> Reset All </Dropdown.Item>
           </DropdownButton>
           <Button variant = "success" style = {{marginRight: "1.5%", float: "left"}} disabled = {isLoading}
             onClick = {() => {
@@ -223,11 +304,15 @@ function BingoContainer() {
           </h4>
         </Col>
         {isLoading ?
-          <Col xs = {4} style = {{textAlign: "right", marginTop: "1%"}}>
+          <Col xs = {2} style = {{textAlign: "right", marginTop: "1%"}}>
             <Spinner animation = "border"/>
           </Col>
           :
-          <Col lg = {4} style = {{marginTop: "1%", marginBottom: "1%"}}>
+          <div></div>
+        }
+      </Row>
+      <Row style = {{marginTop: "1%"}}>
+        <Col style = {{marginLeft: "1%"}}>
           {!isLoading ?
             <Toast
               autohide = {true}
@@ -246,8 +331,7 @@ function BingoContainer() {
             :
             <div></div>
           }
-          </Col>
-        }
+        </Col>
       </Row>
       {cards.length === 0 ?
         <Row>
