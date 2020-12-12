@@ -69,7 +69,7 @@ function BingoCard(props) {
                 props.setResetId(card.id);
               }}
             >
-              🧽
+              🧹
             </Button>
           </Col>
           <Col>

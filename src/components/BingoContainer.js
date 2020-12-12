@@ -104,7 +104,7 @@ function BingoContainer() {
       <Container fluid>
         <Row  style = {{marginTop: "2%", textAlign: "center"}}>
           <Col>
-            <Spinner animation = "border" />
+            <Spinner animation = "grow" />
           </Col>
         </Row>
       </Container>
@@ -133,7 +133,7 @@ function BingoContainer() {
         show = {deleteShow}
         onHide = {() => {setDeleteShow(false)}}
       >
-        <Modal.Header closeButton> Confirm Delete </Modal.Header>
+        <Modal.Header closeButton> Confirm Delete 🗑️ </Modal.Header>
         <Modal.Body> Are you sure you want to delete this bingo card? </Modal.Body>
         <Modal.Footer>
           <Button
@@ -164,7 +164,7 @@ function BingoContainer() {
         show = {resetShow}
         onHide = {() => {setResetShow(false)}}
       >
-        <Modal.Header closeButton> Confirm Reset </Modal.Header>
+        <Modal.Header closeButton> Confirm Reset 🧹 </Modal.Header>
         <Modal.Body> Are you sure you want to reset this bingo card? </Modal.Body>
         <Modal.Footer>
           <Button
@@ -183,9 +183,9 @@ function BingoContainer() {
         </Modal.Footer>
       </Modal>
       <Row style = {{marginTop: "2%"}}>
-        <Col>
+        <Col xs = {10}>
           <h4>
-            <Button variant = "success" style = {{marginRight: "1%"}}
+            <Button variant = "success" style = {{marginRight: "1.5%"}}
               onClick = {() => {
                 if(cards.length === 4) {
                   setShow(true);
@@ -203,10 +203,17 @@ function BingoContainer() {
             Your Cards
           </h4>
         </Col>
+        <Col xs = {2} style = {{textAlign: "right"}}>
+          {isLoading ?
+            <Spinner animation = "border" />
+            :
+            <div></div>
+          }
+        </Col>
       </Row>
       {cards.length === 0 ?
         <Row>
-          <Col> <p> You don't have any bingo cards. Click the + button to add some. 🎅🎄 </p> </Col>
+          <Col> <p> You don't have any bingo cards. Click the + button to add a card. 🎅🎄 </p> </Col>
         </Row>
         :
         <Row>
