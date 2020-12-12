@@ -11,7 +11,7 @@ import BingoContainer from './components/BingoContainer.js';
 
 function App() {
   return (
-    <body style = {{backgroundColor: "#E9F7EF"}}>
+    <body style = {{backgroundImage: "url('snowflake.png')"}}>
       <Container>
         <Row>
           <Col>

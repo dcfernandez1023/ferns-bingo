@@ -24,10 +24,20 @@ export function deleteOne(id, collectionName, callback, callbackOnError) {
 	}
 }
 
-//returns all the documents within the specified collection
+//returns a promise that yields all the docs within the specified collection upon success
 export function getAllDocs(collectionName, callbackOnError) {
 	try {
 		return DBFS.collection(collectionName).get();
+	}
+	catch(error) {
+		callbackOnError(error);
+	}
+}
+
+//returns a promise that yields the specified doc within the specified collection upon success
+export function getOne(id, collectionName, callbackOnError) {
+	try {
+		return DBFS.collection(collectionName).doc(id).get();
 	}
 	catch(error) {
 		callbackOnError(error);

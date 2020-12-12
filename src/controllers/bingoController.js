@@ -20,7 +20,7 @@ export async function createCard(callback, callbackOnError) {
       snapshot.forEach(doc => {
         allCards.push(doc.data());
       });
-      /*
+/*
       var cards = localStorageHelper.getCards();
       card = cards[i];
       card.id = "yo!";
@@ -29,8 +29,9 @@ export async function createCard(callback, callbackOnError) {
         return;
       }
       callbackOnError("Internal error. Could not generate a new bingo card.")
+      updateDuplicateLog();
       return;
-      */
+*/
       while(i < LIMIT) {
         card = BingoModel.card;
         card.id = randomId();
@@ -41,6 +42,7 @@ export async function createCard(callback, callbackOnError) {
         }
         i++;
       }
+      updateDuplicateLog();
       callbackOnError("Internal error. Could not generate a new bingo card.");
     }).catch(error => {
       console.log(error);
@@ -94,4 +96,34 @@ function isExistingCard(card, allCards) {
     }
   }
   return false;
+}
+
+function updateDuplicateLog() {
+  console.log("here");
+  DB.getOne("duplicateLog", "cardAnalytics",
+    function(error) {
+      console.log(error);
+    }
+  ).then(doc => {
+    var data;
+    if(doc.data().duplicateCounter === undefined) {
+      data = {duplicateCounter: 1};
+    }
+    else {
+      data = doc.data();
+      var count = data.duplicateCounter + 1;
+      data.duplicateCounter = count;
+    }
+    console.log(data.duplicateCounter);
+    DB.writeOne("duplicateLog", data, "cardAnalytics",
+      function() {
+        return;
+      },
+      function(error) {
+        console.log(error);
+      }
+    );
+  }).catch(error => {
+    console.log(error);
+  });
 }

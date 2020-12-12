@@ -7,6 +7,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/Spinner';
 import Toast from 'react-bootstrap/Toast';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 import BingoCard from './BingoCard.js';
 const BingoController = require('../controllers/bingoController.js');
@@ -196,31 +198,36 @@ function BingoContainer() {
       </Modal>
       <Row style = {{marginTop: "2%"}}>
         <Col xs = {8}>
+          <DropdownButton id = "card-options" variant = "success" style = {{marginLeft: "1.5%", marginRight: "1%", float: "left"}}>
+            <Dropdown.ItemText> <strong> Card Options </strong> </Dropdown.ItemText>
+            <Dropdown.Item> Delete All </Dropdown.Item>
+            <Dropdown.Item> Reset All </Dropdown.Item>
+          </DropdownButton>
+          <Button variant = "success" style = {{marginRight: "1.5%", float: "left"}} disabled = {isLoading}
+            onClick = {() => {
+              if(cards.length === 4) {
+                setShow(true);
+                return;
+              }
+              setIsLoading(true);
+              BingoController.createCard(
+                createCardCallback,
+                callbackOnError
+              );
+            }}
+          >
+            +
+          </Button>
           <h4>
-            <Button variant = "success" style = {{marginRight: "1.5%"}}
-              onClick = {() => {
-                if(cards.length === 4) {
-                  setShow(true);
-                  return;
-                }
-                setIsLoading(true);
-                BingoController.createCard(
-                  createCardCallback,
-                  callbackOnError
-                );
-              }}
-            >
-              +
-            </Button>
             Your Cards
           </h4>
         </Col>
         {isLoading ?
-          <Col xs = {4} style = {{textAlign: "right"}}>
-            <Spinner animation = "border" />
+          <Col xs = {4} style = {{textAlign: "right", marginTop: "1%"}}>
+            <Spinner animation = "border"/>
           </Col>
           :
-          <Col lg = {4}>
+          <Col lg = {4} style = {{marginTop: "1%", marginBottom: "1%"}}>
           {!isLoading ?
             <Toast
               autohide = {true}
