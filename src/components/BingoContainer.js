@@ -5,7 +5,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Spinner from 'react-bootstrap/Spinner'
+import Spinner from 'react-bootstrap/Spinner';
+import Toast from 'react-bootstrap/Toast';
 
 import BingoCard from './BingoCard.js';
 const BingoController = require('../controllers/bingoController.js');
@@ -22,6 +23,8 @@ function BingoContainer() {
   const[resetShow, setResetShow] = useState();
   const[resetId, setResetId] = useState();
   const[isLoading, setIsLoading] = useState(false);
+  const[toastShow, setToastShow] = useState(false);
+  const[toastText, setToastText] = useState("");
 
   useEffect(() => {
     localStorageHelper.initializeStorage();
@@ -47,12 +50,16 @@ function BingoContainer() {
     localStorageHelper.updateCards(newCards);
     localStorageHelper.updateMetaData(newMetaData);
     setIsLoading(false);
+    setToastText("✔️ Card added successfully");
+    setToastShow(true);
   }
 
   function callbackOnError(error) {
     //TODO: handle errors more elegantly
     alert(error);
     setIsLoading(false);
+    setToastShow(true);
+    setToastText("❌ Action failed")
   }
 
   function selectBox(id, row, col) {
@@ -84,6 +91,8 @@ function BingoContainer() {
     localStorageHelper.updateMetaData(newMetaData);
     setDeleteShow(false);
     setIsLoading(false);
+    setToastText("✔️ Card deleted successfully");
+    setToastShow(true);
   }
 
   function resetCard() {
@@ -97,6 +106,9 @@ function BingoContainer() {
     localStorageHelper.updateMetaData(newMetaData);
     setResetShow(false);
     setIsLoading(false);
+    setToastShow(true);
+    setToastText("✔️ Card reset successfully");
+    setToastShow(true);
   }
 
   if(cards === undefined || metaData === undefined) {
@@ -183,7 +195,7 @@ function BingoContainer() {
         </Modal.Footer>
       </Modal>
       <Row style = {{marginTop: "2%"}}>
-        <Col xs = {10}>
+        <Col xs = {8}>
           <h4>
             <Button variant = "success" style = {{marginRight: "1.5%"}}
               onClick = {() => {
@@ -203,13 +215,32 @@ function BingoContainer() {
             Your Cards
           </h4>
         </Col>
-        <Col xs = {2} style = {{textAlign: "right"}}>
-          {isLoading ?
+        {isLoading ?
+          <Col xs = {4} style = {{textAlign: "right"}}>
             <Spinner animation = "border" />
+          </Col>
+          :
+          <Col lg = {4}>
+          {!isLoading ?
+            <Toast
+              autohide = {true}
+              show = {toastShow}
+              delay = {3000}
+              onClose = {() => {
+                setToastShow(false);
+                setToastText("");
+              }}
+            >
+              <Toast.Header>
+                <strong className = "mr-auto"> Action Status </strong>
+              </Toast.Header>
+              <Toast.Body> {toastText} </Toast.Body>
+            </Toast>
             :
             <div></div>
           }
-        </Col>
+          </Col>
+        }
       </Row>
       {cards.length === 0 ?
         <Row>

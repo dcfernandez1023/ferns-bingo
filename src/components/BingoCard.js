@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import ListGroup from 'react-bootstrap/ListGroup';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const BingoModel = require('../models/bingoModel.js');
 const BingoController = require('../controllers/bingoController.js');
@@ -63,24 +65,44 @@ function BingoCard(props) {
         })}
         <Row style = {{marginTop: "2%", float: "right"}}>
           <Col>
-            <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "75%"}}
-              onClick = {() => {
-                props.setResetShow(true);
-                props.setResetId(card.id);
-              }}
+            <OverlayTrigger
+              key = {"reset" + card.id}
+              placement = "bottom"
+              overlay = {
+                <Tooltip id = {"tooltip-reset" + card.id}>
+                  <strong> Reset </strong> Card
+                </Tooltip>
+              }
             >
-              🧹
-            </Button>
+              <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "60%"}}
+                onClick = {() => {
+                  props.setResetShow(true);
+                  props.setResetId(card.id);
+                }}
+              >
+                🧹
+              </Button>
+            </OverlayTrigger>
           </Col>
           <Col>
-            <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "25%"}}
-              onClick = {() => {
-                props.setDeleteShow(true);
-                props.setDeleteId(card.id);
-              }}
+            <OverlayTrigger
+              key = {"delete" + card.id}
+              placement = "bottom"
+              overlay = {
+                <Tooltip id = {"tooltip-delete" + card.id}>
+                  <strong> Delete </strong> Card
+                </Tooltip>
+              }
             >
-              🗑️
-            </Button>
+              <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "25%"}}
+                onClick = {() => {
+                  props.setDeleteShow(true);
+                  props.setDeleteId(card.id);
+                }}
+              >
+                🗑️
+              </Button>
+            </OverlayTrigger>
           </Col>
         </Row>
       </Col>
