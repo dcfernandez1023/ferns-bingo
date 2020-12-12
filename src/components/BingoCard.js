@@ -74,7 +74,7 @@ function BingoCard(props) {
                 </Tooltip>
               }
             >
-              <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "60%"}}
+              <Button variant = "outline-dark" style = {{marginLeft: "60%"}}
                 onClick = {() => {
                   props.setResetShow(true);
                   props.setResetId(card.id);
@@ -94,7 +94,7 @@ function BingoCard(props) {
                 </Tooltip>
               }
             >
-              <Button variant = "outline-dark" size = "sm" style = {{marginLeft: "25%"}}
+              <Button variant = "outline-dark" style = {{marginLeft: "25%"}}
                 onClick = {() => {
                   props.setDeleteShow(true);
                   props.setDeleteId(card.id);
