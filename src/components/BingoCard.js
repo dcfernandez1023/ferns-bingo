@@ -19,14 +19,19 @@ function BingoCard(props) {
 
   useEffect(() => {
     setCard(props.card);
-    setSelected(props.selected);
+    if(props.selected === undefined) {
+      setSelected([[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]]);
+    }
+    else {
+      setSelected(props.selected);
+    }
   }, [props.card, props.selected])
 
   const gridStyle = {textAlign: "center", padding: "1%", border: "1px solid gray"};
   const gridHeaderStyle = {backgroundColor: "#D4E6F1", textAlign: "center", padding: "1%", border: "1px solid gray"};
   const cardStyle = {margin: "2%"};
 
-  if(card === undefined || selected === undefined) {
+  if(card === undefined) {
     return <div></div>
   }
   return (
@@ -74,7 +79,7 @@ function BingoCard(props) {
                 </Tooltip>
               }
             >
-              <Button variant = "outline-dark" style = {{marginLeft: "60%"}}
+              <Button variant = "light" style = {{backgroundColor: "#D4E6F1", marginLeft: "60%"}}
                 onClick = {() => {
                   props.setResetShow(true);
                   props.setResetId(card.id);
@@ -94,7 +99,7 @@ function BingoCard(props) {
                 </Tooltip>
               }
             >
-              <Button variant = "outline-dark" style = {{marginLeft: "25%"}}
+              <Button variant = "light" style = {{backgroundColor: "#D4E6F1", marginLeft: "25%"}}
                 onClick = {() => {
                   props.setDeleteShow(true);
                   props.setDeleteId(card.id);

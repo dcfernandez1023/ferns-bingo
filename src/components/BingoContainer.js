@@ -72,6 +72,9 @@ function BingoContainer() {
 
   function selectBox(id, row, col) {
     var newMetaData = JSON.parse(JSON.stringify(metaData));
+    if(newMetaData[id] === undefined) {
+      newMetaData[id] = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]];
+    }
     if(newMetaData[id][row][col] === 1) {
       newMetaData[id][row][col] = 0;
     }
@@ -279,12 +282,7 @@ function BingoContainer() {
       </Modal>
       <Row style = {{marginTop: "2%"}}>
         <Col xs = {10}>
-          <DropdownButton id = "card-options" variant = "success" style = {{marginLeft: "1.5%", marginRight: "1.5%", float: "left"}}>
-            <Dropdown.ItemText> <strong> Card Options </strong> </Dropdown.ItemText>
-            <Dropdown.Item onClick = {() => setDeleteAllShow(true)}> Delete All </Dropdown.Item>
-            <Dropdown.Item onClick = {() => setResetAllShow(true)}> Reset All </Dropdown.Item>
-          </DropdownButton>
-          <Button variant = "success" style = {{marginRight: "1.5%", float: "left"}} disabled = {isLoading}
+          <Button variant = "success" style = {{marginLeft: "1%", marginRight: "1%", float: "left"}} disabled = {isLoading}
             onClick = {() => {
               if(cards.length === 4) {
                 setShow(true);
@@ -299,7 +297,12 @@ function BingoContainer() {
           >
             +
           </Button>
-          <h4>
+          <DropdownButton id = "card-options" variant = "success" style = {{marginLeft: "1%", marginRight: "1.5%", float: "left"}}>
+            <Dropdown.ItemText> <strong> Card Options </strong> </Dropdown.ItemText>
+            <Dropdown.Item onClick = {() => setDeleteAllShow(true)}> Delete All </Dropdown.Item>
+            <Dropdown.Item onClick = {() => setResetAllShow(true)}> Reset All </Dropdown.Item>
+          </DropdownButton>
+          <h4 style = {{marginTop: "1%"}}>
             Your Cards
           </h4>
         </Col>
@@ -334,8 +337,8 @@ function BingoContainer() {
         </Col>
       </Row>
       {cards.length === 0 ?
-        <Row>
-          <Col> <p> You don't have any bingo cards. Click the + button to add a card. 🎅🎄 </p> </Col>
+        <Row style = {{marginTop: "1%"}}>
+          <Col style = {{marginLeft: "1.5%"}}> <p> You don't have any bingo cards. Click the + button to add a card. 🎅🎄 </p> </Col>
         </Row>
         :
         <Row>
